@@ -281,8 +281,13 @@ export async function getAnalyticsData() {
     // Count disciplines
     const disciplineCounts: Record<Discipline, number> = {
       Software: 0,
+      Art: 0,
       Hardware: 0,
-      Creative: 0,
+      Design: 0,
+      Fashion: 0,
+      'AI/ML': 0,
+      Other: 0,
+      'Photographer/Videographer': 0,
     };
 
     (allVisits || []).forEach((visit) => {
