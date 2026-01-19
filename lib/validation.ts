@@ -52,7 +52,16 @@ export function validateDisciplines(
     };
   }
 
-  const validDisciplines: Discipline[] = ['Software', 'Hardware', 'Creative'];
+  const validDisciplines: Discipline[] = [
+    'Software',
+    'Art',
+    'Hardware',
+    'Design',
+    'Fashion',
+    'AI/ML',
+    'Other',
+    'Photographer/Videographer',
+  ];
   const invalidDisciplines = disciplines.filter(
     (d) => !validDisciplines.includes(d)
   );
