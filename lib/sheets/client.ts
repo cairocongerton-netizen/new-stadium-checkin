@@ -26,16 +26,16 @@ export async function getGoogleSheetsClient() {
   }
 
   try {
-    // Load credentials from file in production, or use environment variable
+    // Load credentials from environment variable or file
     let credentials;
 
-    if (process.env.NODE_ENV === 'production' || !process.env.GOOGLE_SERVICE_ACCOUNT_KEY) {
-      // In production, read from credentials.json file
+    if (process.env.GOOGLE_SERVICE_ACCOUNT_KEY) {
+      // Use environment variable (production and development)
+      credentials = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_KEY);
+    } else {
+      // Fallback to local file in development
       const credentialsPath = join(process.cwd(), 'credentials.json');
       credentials = JSON.parse(readFileSync(credentialsPath, 'utf8'));
-    } else {
-      // In development, use environment variable
-      credentials = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_KEY);
     }
 
     // Create JWT auth client
