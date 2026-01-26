@@ -147,30 +147,39 @@ export async function authenticateUser(
   try {
     const sanitizedEmail = sanitizeInput(email.toLowerCase());
 
+    console.log('🔍 Authenticating user:', sanitizedEmail);
+
     // Read all users
     const userRows = await readSheet(SHEETS.USERS);
+    console.log('📊 Total users in sheet:', userRows.length);
 
     // Find user by email
     const userRowIndex = userRows.findIndex(row => row[1] === sanitizedEmail);
 
     if (userRowIndex === -1) {
-      return { success: false, error: 'Invalid email or PIN' };
+      console.log('❌ User not found with email:', sanitizedEmail);
+      return { success: false, error: 'Account not found. Please register first.' };
     }
 
     const user = parseUserRow(userRows[userRowIndex]);
     if (!user || !user.pin) {
-      return { success: false, error: 'Invalid email or PIN' };
+      console.log('❌ User exists but has no PIN');
+      return { success: false, error: 'Account exists but has no PIN. Please contact support.' };
     }
+
+    console.log('🔐 Verifying PIN for user:', user.name);
 
     // Verify PIN
     if (!verifyPin(pin, user.pin)) {
-      return { success: false, error: 'Invalid email or PIN' };
+      console.log('❌ PIN verification failed');
+      return { success: false, error: 'Incorrect PIN. Please try again.' };
     }
 
+    console.log('✅ Authentication successful');
     return { success: true, user };
   } catch (error) {
     console.error('Error in authenticateUser:', error);
-    return { success: false, error: 'Authentication failed' };
+    return { success: false, error: 'Authentication failed. Please try again.' };
   }
 }
 

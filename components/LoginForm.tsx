@@ -74,8 +74,8 @@ export default function LoginForm() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4">
-      <div className="max-w-md mx-auto">
+    <div className="min-h-screen bg-gray-50 py-8 px-4 flex items-center justify-center">
+      <div className="max-w-md w-full">
         <div className="mb-8">
           <Link href="/" className="text-gray-600 hover:text-black text-sm">
             ← Back to Home
