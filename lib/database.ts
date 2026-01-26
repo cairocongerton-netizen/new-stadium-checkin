@@ -395,3 +395,123 @@ export async function exportToCSV(filters?: {
     throw new Error('Failed to export data');
   }
 }
+
+/**
+ * Look up user by PIN
+ */
+export async function getUserByPin(pin: string): Promise<User | null> {
+  try {
+    const { data: users, error } = await supabase
+      .from('users')
+      .select('*')
+      .eq('pin', pin)
+      .limit(1);
+
+    if (error) {
+      console.error('Error looking up user by PIN:', error);
+      throw new Error('Failed to lookup user by PIN');
+    }
+
+    return users && users.length > 0 ? (users[0] as User) : null;
+  } catch (error) {
+    console.error('Unexpected error in getUserByPin:', error);
+    throw new Error('Failed to lookup user by PIN');
+  }
+}
+
+/**
+ * Check in user by PIN (creates new user if PIN doesn't exist)
+ */
+export async function checkInUserByPin(data: {
+  pin: string;
+  name: string;
+  email: string;
+  disciplines: Discipline[];
+  reason: string;
+}): Promise<{ success: boolean; error?: string }> {
+  try {
+    const sanitizedEmail = sanitizeInput(data.email.toLowerCase());
+    const sanitizedName = sanitizeInput(data.name);
+    const sanitizedReason = sanitizeInput(data.reason);
+
+    // Check if PIN already exists
+    const { data: existingUser, error: lookupError } = await supabase
+      .from('users')
+      .select('id')
+      .eq('pin', data.pin)
+      .single();
+
+    if (lookupError && lookupError.code !== 'PGRST116') {
+      console.error('Error during PIN lookup:', lookupError);
+      return { success: false, error: 'Database error' };
+    }
+
+    let userId: string;
+
+    if (existingUser) {
+      // User exists with this PIN - check for recent check-in
+      const hasRecent = await hasRecentCheckIn(existingUser.id);
+      if (hasRecent) {
+        return {
+          success: false,
+          error: 'You have already checked in within the last minute',
+        };
+      }
+
+      // Update existing user
+      const { error: updateError } = await supabase
+        .from('users')
+        .update({
+          name: sanitizedName,
+          email: sanitizedEmail,
+          disciplines: data.disciplines,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', existingUser.id);
+
+      if (updateError) {
+        console.error('Error updating user:', updateError);
+        return { success: false, error: 'Failed to update user information' };
+      }
+
+      userId = existingUser.id;
+    } else {
+      // Create new user with this PIN
+      const { data: newUser, error: insertError } = await supabase
+        .from('users')
+        .insert({
+          email: sanitizedEmail,
+          name: sanitizedName,
+          disciplines: data.disciplines,
+          pin: data.pin,
+        })
+        .select()
+        .single();
+
+      if (insertError || !newUser) {
+        console.error('Error creating user:', insertError);
+        return { success: false, error: 'Failed to create user' };
+      }
+
+      userId = newUser.id;
+    }
+
+    // Record the visit
+    const { error: visitError } = await supabase.from('visits').insert({
+      user_id: userId,
+      reason_for_visit: sanitizedReason,
+      disciplines_at_visit: data.disciplines,
+      timestamp: new Date().toISOString(),
+    });
+
+    if (visitError) {
+      console.error('Error recording visit:', visitError);
+      return { success: false, error: 'Failed to record visit' };
+    }
+
+    return { success: true };
+  } catch (error) {
+    console.error('Unexpected error in checkInUserByPin:', error);
+    return { success: false, error: 'An unexpected error occurred' };
+  }
+}
