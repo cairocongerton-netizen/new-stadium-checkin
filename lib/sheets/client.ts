@@ -3,8 +3,6 @@
  */
 
 import { google } from 'googleapis';
-import { readFileSync } from 'fs';
-import { join } from 'path';
 
 export const SHEETS = {
   USERS: 'Users',
@@ -26,17 +24,12 @@ export async function getGoogleSheetsClient() {
   }
 
   try {
-    // Load credentials from environment variable or file
-    let credentials;
-
-    if (process.env.GOOGLE_SERVICE_ACCOUNT_KEY) {
-      // Use environment variable (production and development)
-      credentials = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_KEY);
-    } else {
-      // Fallback to local file in development
-      const credentialsPath = join(process.cwd(), 'credentials.json');
-      credentials = JSON.parse(readFileSync(credentialsPath, 'utf8'));
+    // Load credentials from environment variable
+    if (!process.env.GOOGLE_SERVICE_ACCOUNT_KEY) {
+      throw new Error('GOOGLE_SERVICE_ACCOUNT_KEY environment variable not set');
     }
+
+    const credentials = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_KEY);
 
     // Create JWT auth client
     auth = new google.auth.JWT({
