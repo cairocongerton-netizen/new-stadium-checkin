@@ -19,6 +19,7 @@ export interface User {
   disciplines: Discipline[];
   created_at: string;
   updated_at: string;
+  pin?: string; // Hashed PIN
 }
 
 export interface Visit {

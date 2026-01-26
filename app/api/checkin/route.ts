@@ -1,28 +1,20 @@
 /**
- * API Route: Check In with PIN
- * POST /api/pin-checkin
+ * API Route: Check In
+ * POST /api/checkin
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { checkInUserByPin } from '@/lib/database';
-import type { Discipline } from '@/types';
+import { checkInUser } from '@/lib/sheets/operations';
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { pin, name, email, disciplines, reason } = body;
+    const { userId, reason } = body;
 
     // Validation
-    if (!pin || pin.length !== 4) {
+    if (!userId || !reason) {
       return NextResponse.json(
-        { error: 'Invalid PIN' },
-        { status: 400 }
-      );
-    }
-
-    if (!name || !email || !disciplines || disciplines.length === 0 || !reason) {
-      return NextResponse.json(
-        { error: 'All fields are required' },
+        { error: 'User ID and reason are required' },
         { status: 400 }
       );
     }
@@ -35,11 +27,8 @@ export async function POST(request: NextRequest) {
     }
 
     // Perform check-in
-    const result = await checkInUserByPin({
-      pin,
-      name,
-      email,
-      disciplines: disciplines as Discipline[],
+    const result = await checkInUser({
+      userId,
       reason,
     });
 
@@ -52,7 +41,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Error in pin-checkin API:', error);
+    console.error('Error in checkin API:', error);
     return NextResponse.json(
       { error: 'Failed to process check-in' },
       { status: 500 }
