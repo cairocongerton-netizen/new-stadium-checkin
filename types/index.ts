@@ -16,10 +16,11 @@ export interface User {
   id: string;
   email: string;
   name: string;
+  workplace: string;
   disciplines: Discipline[];
   created_at: string;
   updated_at: string;
-  pin?: string; // Hashed PIN
+  pin: string; // Plaintext PIN for admin recovery
 }
 
 export interface Visit {

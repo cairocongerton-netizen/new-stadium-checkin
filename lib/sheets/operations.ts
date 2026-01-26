@@ -6,7 +6,6 @@ import { getGoogleSheetsClient, SHEETS } from './client';
 import type { User, Visit, Discipline } from '@/types';
 import { sanitizeInput } from '../validation';
 import { v4 as uuidv4 } from 'uuid';
-import { hashPin, verifyPin } from '../pin';
 
 /**
  * Helper: Read all rows from a sheet
@@ -59,19 +58,20 @@ async function updateRow(sheetName: string, rowIndex: number, values: any[]): Pr
 
 /**
  * Helper: Parse user row from sheet
- * Columns: ID, EMAIL, NAME, DISCIPLINES, CREATED_AT, UPDATED_AT, PIN_HASH
+ * Columns: ID, EMAIL, NAME, WORKPLACE, DISCIPLINES, CREATED_AT, UPDATED_AT, PIN
  */
 function parseUserRow(row: any[]): User | null {
-  if (!row || row.length < 6) return null;
+  if (!row || row.length < 7) return null;
 
   return {
     id: row[0],
     email: row[1],
     name: row[2],
-    disciplines: row[3] ? row[3].split(',') as Discipline[] : [],
-    created_at: row[4],
-    updated_at: row[5],
-    pin: row[6] || undefined, // This is the hashed PIN
+    workplace: row[3] || '',
+    disciplines: row[4] ? row[4].split(',') as Discipline[] : [],
+    created_at: row[5],
+    updated_at: row[6],
+    pin: row[7] || '', // Plaintext PIN
   };
 }
 
@@ -97,12 +97,14 @@ function parseVisitRow(row: any[]): Visit | null {
 export async function registerUser(data: {
   email: string;
   name: string;
+  workplace: string;
   pin: string;
   disciplines: Discipline[];
 }): Promise<{ success: boolean; error?: string; userId?: string }> {
   try {
     const sanitizedEmail = sanitizeInput(data.email.toLowerCase());
     const sanitizedName = sanitizeInput(data.name);
+    const sanitizedWorkplace = sanitizeInput(data.workplace);
 
     // Read all users
     const userRows = await readSheet(SHEETS.USERS);
@@ -116,16 +118,16 @@ export async function registerUser(data: {
     // Create new user
     const userId = uuidv4();
     const now = new Date().toISOString();
-    const hashedPin = hashPin(data.pin);
 
     const newUserRow = [
       userId,
       sanitizedEmail,
       sanitizedName,
+      sanitizedWorkplace,
       data.disciplines.join(','),
       now,
       now,
-      hashedPin,
+      data.pin, // Store PIN in plaintext for admin recovery
     ];
 
     await appendToSheet(SHEETS.USERS, newUserRow);
@@ -169,8 +171,8 @@ export async function authenticateUser(
 
     console.log('🔐 Verifying PIN for user:', user.name);
 
-    // Verify PIN
-    if (!verifyPin(pin, user.pin)) {
+    // Verify PIN (plaintext comparison)
+    if (pin !== user.pin) {
       console.log('❌ PIN verification failed');
       return { success: false, error: 'Incorrect PIN. Please try again.' };
     }
@@ -196,6 +198,57 @@ export async function getUserByEmail(email: string): Promise<User | null> {
   } catch (error) {
     console.error('Error in getUserByEmail:', error);
     return null;
+  }
+}
+
+/**
+ * Update user profile
+ */
+export async function updateUserProfile(data: {
+  userId: string;
+  name: string;
+  workplace: string;
+  disciplines: Discipline[];
+  pin: string;
+}): Promise<{ success: boolean; error?: string }> {
+  try {
+    const sanitizedName = sanitizeInput(data.name);
+    const sanitizedWorkplace = sanitizeInput(data.workplace);
+
+    // Read all users
+    const userRows = await readSheet(SHEETS.USERS);
+
+    // Find user by ID
+    const userRowIndex = userRows.findIndex(row => row[0] === data.userId);
+
+    if (userRowIndex === -1) {
+      return { success: false, error: 'User not found' };
+    }
+
+    const user = parseUserRow(userRows[userRowIndex]);
+    if (!user) {
+      return { success: false, error: 'Invalid user data' };
+    }
+
+    // Update user
+    const now = new Date().toISOString();
+    const updatedRow = [
+      user.id,
+      user.email, // Email cannot be changed
+      sanitizedName,
+      sanitizedWorkplace,
+      data.disciplines.join(','),
+      user.created_at,
+      now,
+      data.pin,
+    ];
+
+    await updateRow(SHEETS.USERS, userRowIndex, updatedRow);
+
+    return { success: true };
+  } catch (error) {
+    console.error('Error in updateUserProfile:', error);
+    return { success: false, error: 'Failed to update profile' };
   }
 }
 

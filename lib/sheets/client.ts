@@ -9,7 +9,7 @@ export const SHEETS = {
   VISITS: 'Visits',
 } as const;
 
-export const USER_COLUMNS = ['ID', 'EMAIL', 'NAME', 'DISCIPLINES', 'CREATED_AT', 'UPDATED_AT', 'PIN_HASH'];
+export const USER_COLUMNS = ['ID', 'EMAIL', 'NAME', 'WORKPLACE', 'DISCIPLINES', 'CREATED_AT', 'UPDATED_AT', 'PIN'];
 export const VISIT_COLUMNS = ['ID', 'USER_ID', 'TIMESTAMP', 'REASON', 'DISCIPLINES'];
 
 let sheetsClient: any = null;

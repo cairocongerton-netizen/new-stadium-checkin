@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import type { User } from '@/types';
 
 export default function CheckInPage() {
@@ -119,12 +120,20 @@ export default function CheckInPage() {
             </h1>
             <p className="text-gray-600 text-sm">{user.email}</p>
           </div>
-          <button
-            onClick={handleSignOut}
-            className="text-sm text-gray-600 hover:text-black"
-          >
-            Sign Out
-          </button>
+          <div className="flex gap-4">
+            <Link
+              href="/profile"
+              className="text-sm text-gray-600 hover:text-black"
+            >
+              Edit Profile
+            </Link>
+            <button
+              onClick={handleSignOut}
+              className="text-sm text-gray-600 hover:text-black"
+            >
+              Sign Out
+            </button>
+          </div>
         </div>
 
         <div className="bg-white border border-gray-200 p-6 mb-6">

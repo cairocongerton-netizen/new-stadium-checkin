@@ -20,6 +20,7 @@ export default function RegisterForm() {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
+  const [workplace, setWorkplace] = useState('');
   const [pin, setPin] = useState('');
   const [confirmPin, setConfirmPin] = useState('');
   const [selectedDisciplines, setSelectedDisciplines] = useState<Discipline[]>([]);
@@ -50,7 +51,7 @@ export default function RegisterForm() {
     setError(null);
 
     // Validation
-    if (!email.trim() || !name.trim()) {
+    if (!email.trim() || !name.trim() || !workplace.trim()) {
       setError('Please fill in all fields');
       return;
     }
@@ -84,6 +85,7 @@ export default function RegisterForm() {
         body: JSON.stringify({
           email,
           name,
+          workplace,
           pin,
           disciplines: selectedDisciplines,
         }),
@@ -155,6 +157,22 @@ export default function RegisterForm() {
             />
           </div>
 
+          {/* Workplace Field */}
+          <div>
+            <label htmlFor="workplace" className="block text-sm font-medium mb-2">
+              Where do you work?
+            </label>
+            <input
+              type="text"
+              id="workplace"
+              value={workplace}
+              onChange={(e) => setWorkplace(e.target.value)}
+              className="w-full px-4 py-3 border border-gray-300 focus:outline-none focus:border-black transition-colors"
+              placeholder="Company or Organization"
+              autoComplete="organization"
+            />
+          </div>
+
           {/* Disciplines */}
           <div>
             <label className="block text-sm font-medium mb-3">
@@ -186,7 +204,7 @@ export default function RegisterForm() {
               Create a 4-Digit PIN
             </label>
             <input
-              type="text"
+              type="password"
               inputMode="numeric"
               pattern="[0-9]*"
               id="pin"
@@ -195,7 +213,7 @@ export default function RegisterForm() {
               maxLength={4}
               className="w-full px-4 py-3 border border-gray-300 focus:outline-none focus:border-black transition-colors text-center text-2xl tracking-widest font-mono"
               placeholder="••••"
-              autoComplete="off"
+              autoComplete="new-password"
             />
             <p className="text-sm text-gray-500 mt-1">
               Choose a memorable 4-digit PIN for signing in
@@ -208,7 +226,7 @@ export default function RegisterForm() {
               Confirm PIN
             </label>
             <input
-              type="text"
+              type="password"
               inputMode="numeric"
               pattern="[0-9]*"
               id="confirmPin"
@@ -217,7 +235,7 @@ export default function RegisterForm() {
               maxLength={4}
               className="w-full px-4 py-3 border border-gray-300 focus:outline-none focus:border-black transition-colors text-center text-2xl tracking-widest font-mono"
               placeholder="••••"
-              autoComplete="off"
+              autoComplete="new-password"
             />
           </div>
 

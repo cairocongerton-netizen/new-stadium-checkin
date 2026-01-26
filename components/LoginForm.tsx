@@ -121,7 +121,7 @@ export default function LoginForm() {
               4-Digit PIN
             </label>
             <input
-              type="text"
+              type="password"
               inputMode="numeric"
               pattern="[0-9]*"
               id="pin"
@@ -130,7 +130,7 @@ export default function LoginForm() {
               maxLength={4}
               className="w-full px-4 py-3 border border-gray-300 focus:outline-none focus:border-black transition-colors text-center text-2xl tracking-widest font-mono"
               placeholder="••••"
-              autoComplete="off"
+              autoComplete="current-password"
             />
           </div>
 

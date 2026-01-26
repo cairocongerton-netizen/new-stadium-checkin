@@ -1,19 +1,19 @@
 /**
- * API Route: Register User
- * POST /api/register
+ * API Route: Update User Profile
+ * POST /api/profile/update
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { registerUser } from '@/lib/sheets/operations';
+import { updateUserProfile } from '@/lib/sheets/operations';
 import type { Discipline } from '@/types';
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { email, name, workplace, pin, disciplines } = body;
+    const { userId, name, workplace, disciplines, pin } = body;
 
     // Validation
-    if (!email || !name || !workplace || !pin || !disciplines || disciplines.length === 0) {
+    if (!userId || !name || !workplace || !disciplines || disciplines.length === 0 || !pin) {
       return NextResponse.json(
         { error: 'All fields are required' },
         { status: 400 }
@@ -27,27 +27,27 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Register user
-    const result = await registerUser({
-      email,
+    // Update profile
+    const result = await updateUserProfile({
+      userId,
       name,
       workplace,
-      pin,
       disciplines: disciplines as Discipline[],
+      pin,
     });
 
     if (!result.success) {
       return NextResponse.json(
-        { error: result.error || 'Registration failed' },
+        { error: result.error || 'Update failed' },
         { status: 400 }
       );
     }
 
-    return NextResponse.json({ success: true, userId: result.userId });
+    return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Error in register API:', error);
+    console.error('Error in profile update API:', error);
     return NextResponse.json(
-      { error: 'Failed to register' },
+      { error: 'Failed to update profile' },
       { status: 500 }
     );
   }
