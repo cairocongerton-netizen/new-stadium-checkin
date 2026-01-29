@@ -104,12 +104,12 @@ export default function CheckInPage() {
   return (
     <div className="min-h-screen bg-white px-6 py-20">
       <div className="max-w-sm w-full mx-auto">
-        {/* Logo - centered */}
+        {/* Logo - CENTERED */}
         <div className="flex justify-center mb-6">
-          <svg width="90" height="36" viewBox="0 0 90 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <ellipse cx="45" cy="18" rx="45" ry="18" fill="black"/>
-            <text x="14" y="25" fill="white" fontFamily="system-ui, -apple-system, sans-serif" fontSize="22" fontWeight="600" fontStyle="italic">New</text>
-            <circle cx="72" cy="24" r="2" fill="white"/>
+          <svg width="80" height="32" viewBox="0 0 80 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <ellipse cx="40" cy="16" rx="40" ry="16" fill="black"/>
+            <text x="12" y="22" fill="white" fontFamily="system-ui, -apple-system, sans-serif" fontSize="18" fontWeight="600" fontStyle="italic">New</text>
+            <circle cx="62" cy="20" r="2" fill="white"/>
           </svg>
         </div>
 
@@ -119,9 +119,9 @@ export default function CheckInPage() {
         </h1>
 
         {/* Email and Edit Profile */}
-        <div className="flex justify-between items-center mb-2">
+        <div className="flex justify-between items-center mb-1">
           <span className="text-sm text-gray-600">{user.email}</span>
-          <Link href="/profile" className="text-sm underline">
+          <Link href="/profile" className="text-sm">
             Edit Profile
           </Link>
         </div>
@@ -129,7 +129,7 @@ export default function CheckInPage() {
         {/* Disciplines */}
         <div className="mb-6">
           <p className="text-sm font-medium mb-1">My Disciplines:</p>
-          <div className="flex flex-wrap gap-x-6 gap-y-1">
+          <div className="grid grid-cols-3 gap-x-4 gap-y-0">
             {user.disciplines.map((d) => (
               <span key={d} className="text-sm text-gray-600">{d}</span>
             ))}
@@ -153,12 +153,12 @@ export default function CheckInPage() {
                 type="text"
                 value={reason}
                 onChange={(e) => setReason(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:border-black transition-colors mb-4"
+                className="w-full px-4 py-3 border border-gray-300 focus:outline-none focus:border-black transition-colors mb-4"
                 placeholder="I'm working on my..."
               />
 
               {error && (
-                <div className="bg-red-50 border border-red-200 px-4 py-3 mb-4 rounded-md">
+                <div className="bg-red-50 border border-red-200 px-4 py-3 mb-4">
                   <p className="text-red-600 text-sm">{error}</p>
                 </div>
               )}
@@ -166,7 +166,7 @@ export default function CheckInPage() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full bg-black text-white px-6 py-4 rounded-md disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors flex items-center justify-center"
+                className="w-full bg-black text-white px-6 py-4 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors flex items-center justify-center"
               >
                 {isSubmitting ? (
                   <>
@@ -190,7 +190,7 @@ export default function CheckInPage() {
 
             <button
               onClick={handleSignOut}
-              className="w-full bg-black text-white px-6 py-4 rounded-md transition-colors"
+              className="w-full bg-black text-white px-6 py-4 transition-colors"
             >
               Sign Out
             </button>

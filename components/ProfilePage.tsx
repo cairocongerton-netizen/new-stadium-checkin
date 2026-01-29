@@ -116,12 +116,12 @@ export default function ProfilePage() {
   return (
     <div className="min-h-screen bg-white px-6 py-16">
       <div className="max-w-sm w-full mx-auto">
-        {/* Logo - centered */}
+        {/* Logo - CENTERED */}
         <div className="flex justify-center mb-6">
-          <svg width="90" height="36" viewBox="0 0 90 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <ellipse cx="45" cy="18" rx="45" ry="18" fill="black"/>
-            <text x="14" y="25" fill="white" fontFamily="system-ui, -apple-system, sans-serif" fontSize="22" fontWeight="600" fontStyle="italic">New</text>
-            <circle cx="72" cy="24" r="2" fill="white"/>
+          <svg width="80" height="32" viewBox="0 0 80 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <ellipse cx="40" cy="16" rx="40" ry="16" fill="black"/>
+            <text x="12" y="22" fill="white" fontFamily="system-ui, -apple-system, sans-serif" fontSize="18" fontWeight="600" fontStyle="italic">New</text>
+            <circle cx="62" cy="20" r="2" fill="white"/>
           </svg>
         </div>
 
@@ -136,7 +136,7 @@ export default function ProfilePage() {
         </Link>
 
         {success && (
-          <div className="bg-green-50 border border-green-200 px-4 py-3 mb-4 rounded-md">
+          <div className="bg-green-50 border border-green-200 px-4 py-3 mb-4">
             <p className="text-green-600 text-sm">Profile updated successfully!</p>
           </div>
         )}
@@ -151,7 +151,7 @@ export default function ProfilePage() {
               id="email"
               value={user.email}
               readOnly
-              className="w-full px-4 py-3 border border-gray-300 rounded-md bg-gray-50 text-gray-500 cursor-not-allowed"
+              className="w-full px-4 py-3 border border-gray-300 bg-gray-50 text-gray-500 cursor-not-allowed"
             />
           </div>
 
@@ -164,7 +164,7 @@ export default function ProfilePage() {
               id="name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:border-black transition-colors"
+              className="w-full px-4 py-3 border border-gray-300 focus:outline-none focus:border-black transition-colors"
             />
           </div>
 
@@ -177,7 +177,7 @@ export default function ProfilePage() {
               id="preferredName"
               value={preferredName}
               onChange={(e) => setPreferredName(e.target.value)}
-              className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:border-black transition-colors"
+              className="w-full px-4 py-3 border border-gray-300 focus:outline-none focus:border-black transition-colors"
             />
           </div>
 
@@ -190,7 +190,7 @@ export default function ProfilePage() {
               id="workplace"
               value={workplace}
               onChange={(e) => setWorkplace(e.target.value)}
-              className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:border-black transition-colors"
+              className="w-full px-4 py-3 border border-gray-300 focus:outline-none focus:border-black transition-colors"
             />
           </div>
 
@@ -198,13 +198,13 @@ export default function ProfilePage() {
             <label className="block text-sm font-medium mb-2">
               Your disciplines?
             </label>
-            <div className="grid grid-cols-3 gap-x-4 gap-y-1">
+            <div className="grid grid-cols-3 gap-x-4 gap-y-0">
               {DISCIPLINES.map((discipline) => (
                 <button
                   key={discipline}
                   type="button"
                   onClick={() => handleDisciplineToggle(discipline)}
-                  className={`text-left text-sm py-1 transition-colors ${
+                  className={`text-left text-sm py-0.5 transition-colors ${
                     selectedDisciplines.includes(discipline)
                       ? 'text-black font-medium'
                       : 'text-gray-500'
@@ -217,7 +217,7 @@ export default function ProfilePage() {
           </div>
 
           {error && (
-            <div className="bg-red-50 border border-red-200 px-4 py-3 rounded-md">
+            <div className="bg-red-50 border border-red-200 px-4 py-3">
               <p className="text-red-600 text-sm">{error}</p>
             </div>
           )}
@@ -225,7 +225,7 @@ export default function ProfilePage() {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full bg-black text-white px-6 py-4 rounded-md disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors flex items-center justify-center"
+            className="w-full bg-black text-white px-6 py-4 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors flex items-center justify-center"
           >
             {isSubmitting ? (
               <>

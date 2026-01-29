@@ -17,12 +17,12 @@ export default function Home() {
       {/* Mobile Layout */}
       <div className="md:hidden min-h-screen bg-white px-6 py-20">
         <div className="max-w-sm w-full mx-auto">
-          {/* Logo - centered */}
-          <div className="flex justify-center mb-8">
-            <svg width="90" height="36" viewBox="0 0 90 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <ellipse cx="45" cy="18" rx="45" ry="18" fill="black"/>
-              <text x="14" y="25" fill="white" fontFamily="system-ui, -apple-system, sans-serif" fontSize="22" fontWeight="600" fontStyle="italic">New</text>
-              <circle cx="72" cy="24" r="2" fill="white"/>
+          {/* Logo - LEFT aligned */}
+          <div className="mb-6">
+            <svg width="80" height="32" viewBox="0 0 80 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <ellipse cx="40" cy="16" rx="40" ry="16" fill="black"/>
+              <text x="12" y="22" fill="white" fontFamily="system-ui, -apple-system, sans-serif" fontSize="18" fontWeight="600" fontStyle="italic">New</text>
+              <circle cx="62" cy="20" r="2" fill="white"/>
             </svg>
           </div>
 
@@ -51,14 +51,14 @@ export default function Home() {
           <div className="space-y-4">
             <Link
               href="/login"
-              className="block w-full border border-black text-black px-6 py-4 text-center rounded-md"
+              className="block w-full border border-black text-black px-6 py-4 text-center"
             >
               Sign In
             </Link>
 
             <Link
               href="/register"
-              className="block w-full bg-black text-white px-6 py-4 text-center rounded-md"
+              className="block w-full bg-black text-white px-6 py-4 text-center"
             >
               Register for an Account
             </Link>
