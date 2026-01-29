@@ -77,32 +77,33 @@ export default function LoginForm() {
   return (
     <>
       {/* Mobile Layout */}
-      <div className="md:hidden min-h-screen bg-white px-6 py-16">
+      <div className="md:hidden min-h-screen bg-white px-6 py-20">
         <div className="max-w-sm w-full mx-auto">
-          {/* Logo */}
-          <div className="mb-6">
-            <svg width="80" height="32" viewBox="0 0 80 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect width="80" height="32" rx="4" fill="black"/>
-              <text x="10" y="23" fill="white" fontFamily="Apfel Grotezk, sans-serif" fontSize="18" fontWeight="bold">New.</text>
+          {/* Logo - centered */}
+          <div className="flex justify-center mb-8">
+            <svg width="90" height="36" viewBox="0 0 90 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <ellipse cx="45" cy="18" rx="45" ry="18" fill="black"/>
+              <text x="14" y="25" fill="white" fontFamily="system-ui, -apple-system, sans-serif" fontSize="22" fontWeight="600" fontStyle="italic">New</text>
+              <circle cx="72" cy="24" r="2" fill="white"/>
             </svg>
           </div>
 
           {/* Title */}
-          <h1 className="text-4xl font-normal mb-4">Sign In</h1>
+          <h1 className="text-4xl font-normal mb-3">Sign In</h1>
 
           {/* Date and Time */}
-          <div className="flex justify-between items-center mb-8">
+          <div className="flex justify-between items-center mb-6">
             <span className="text-lg">{format(now, 'MMM d, yyyy')}</span>
             <span className="text-lg">{format(now, 'h:mm a')}</span>
           </div>
 
           {showSuccess && (
-            <div className="bg-green-50 border border-green-200 px-4 py-3 mb-6">
+            <div className="bg-green-50 border border-green-200 px-4 py-3 mb-6 rounded-md">
               <p className="text-green-600 text-sm">Account created successfully! Please sign in.</p>
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label htmlFor="email-mobile" className="block text-sm font-medium mb-2">
                 Email Address:
@@ -113,7 +114,7 @@ export default function LoginForm() {
                 id="email-mobile"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 focus:outline-none focus:border-black transition-colors"
+                className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:border-black transition-colors"
                 placeholder="email@example.com"
                 autoComplete="email"
               />
@@ -131,14 +132,14 @@ export default function LoginForm() {
                 value={pin}
                 onChange={(e) => handlePinChange(e.target.value)}
                 maxLength={4}
-                className="w-full px-4 py-3 border border-gray-300 focus:outline-none focus:border-black transition-colors text-center text-2xl tracking-widest"
-                placeholder="&#9679; &#9679; &#9679; &#9679;"
+                className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:border-black transition-colors text-center text-2xl tracking-[0.5em] text-gray-400"
+                placeholder="● ● ● ●"
                 autoComplete="current-password"
               />
             </div>
 
             {error && (
-              <div className="bg-red-50 border border-red-200 px-4 py-3">
+              <div className="bg-red-50 border border-red-200 px-4 py-3 rounded-md">
                 <p className="text-red-600 text-sm">{error}</p>
               </div>
             )}
@@ -146,7 +147,7 @@ export default function LoginForm() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full bg-black text-white px-6 py-4 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors flex items-center justify-center"
+              className="w-full bg-black text-white px-6 py-4 rounded-md disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors flex items-center justify-center mt-2"
             >
               {isSubmitting ? (
                 <>
@@ -161,7 +162,7 @@ export default function LoginForm() {
 
           <p className="text-center text-sm text-gray-500 mt-6">
             <Link href="/" className="hover:text-black">
-              &larr; Go Back
+              ← Go Back
             </Link>
           </p>
         </div>

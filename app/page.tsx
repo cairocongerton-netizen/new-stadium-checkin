@@ -15,29 +15,30 @@ export default function Home() {
   return (
     <>
       {/* Mobile Layout */}
-      <div className="md:hidden min-h-screen bg-white px-6 py-16">
+      <div className="md:hidden min-h-screen bg-white px-6 py-20">
         <div className="max-w-sm w-full mx-auto">
-          {/* Logo */}
-          <div className="mb-6">
-            <svg width="80" height="32" viewBox="0 0 80 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect width="80" height="32" rx="4" fill="black"/>
-              <text x="10" y="23" fill="white" fontFamily="Apfel Grotezk, sans-serif" fontSize="18" fontWeight="bold">New.</text>
+          {/* Logo - centered */}
+          <div className="flex justify-center mb-8">
+            <svg width="90" height="36" viewBox="0 0 90 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <ellipse cx="45" cy="18" rx="45" ry="18" fill="black"/>
+              <text x="14" y="25" fill="white" fontFamily="system-ui, -apple-system, sans-serif" fontSize="22" fontWeight="600" fontStyle="italic">New</text>
+              <circle cx="72" cy="24" r="2" fill="white"/>
             </svg>
           </div>
 
           {/* Title */}
-          <h1 className="text-4xl font-normal leading-tight mb-4">
+          <h1 className="text-4xl font-normal leading-tight mb-3">
             New Stadium<br/>Check-In
           </h1>
 
           {/* Date and Time */}
-          <div className="flex justify-between items-center mb-6">
+          <div className="flex justify-between items-center mb-4">
             <span className="text-lg">{format(now, 'MMM d, yyyy')}</span>
             <span className="text-lg">{format(now, 'h:mm a')}</span>
           </div>
 
           {/* Welcome text */}
-          <p className="text-sm text-gray-700 mb-4">
+          <p className="text-sm text-gray-700 mb-3">
             Welcome to New Stadium! Please register or sign in to check in.
           </p>
 
@@ -50,14 +51,14 @@ export default function Home() {
           <div className="space-y-4">
             <Link
               href="/login"
-              className="block w-full border border-black text-black px-6 py-4 text-center"
+              className="block w-full border border-black text-black px-6 py-4 text-center rounded-md"
             >
               Sign In
             </Link>
 
             <Link
               href="/register"
-              className="block w-full bg-black text-white px-6 py-4 text-center"
+              className="block w-full bg-black text-white px-6 py-4 text-center rounded-md"
             >
               Register for an Account
             </Link>
