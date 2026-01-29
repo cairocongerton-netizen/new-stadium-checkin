@@ -58,20 +58,39 @@ async function updateRow(sheetName: string, rowIndex: number, values: any[]): Pr
 
 /**
  * Helper: Parse user row from sheet
- * Columns: ID, EMAIL, NAME, WORKPLACE, DISCIPLINES, CREATED_AT, UPDATED_AT, PIN
+ * Columns: ID, EMAIL, NAME, PREFERRED_NAME, WORKPLACE, DISCIPLINES, CREATED_AT, UPDATED_AT, PIN
  */
 function parseUserRow(row: any[]): User | null {
   if (!row || row.length < 7) return null;
 
+  // Support both old format (no preferred_name) and new format
+  const hasPreferredName = row.length >= 9;
+
+  if (hasPreferredName) {
+    return {
+      id: row[0],
+      email: row[1],
+      name: row[2],
+      preferred_name: row[3] || '',
+      workplace: row[4] || '',
+      disciplines: row[5] ? row[5].split(',') as Discipline[] : [],
+      created_at: row[6],
+      updated_at: row[7],
+      pin: row[8] || '',
+    };
+  }
+
+  // Legacy format without preferred_name
   return {
     id: row[0],
     email: row[1],
     name: row[2],
+    preferred_name: '',
     workplace: row[3] || '',
     disciplines: row[4] ? row[4].split(',') as Discipline[] : [],
     created_at: row[5],
     updated_at: row[6],
-    pin: row[7] || '', // Plaintext PIN
+    pin: row[7] || '',
   };
 }
 
@@ -97,6 +116,7 @@ function parseVisitRow(row: any[]): Visit | null {
 export async function registerUser(data: {
   email: string;
   name: string;
+  preferred_name: string;
   workplace: string;
   pin: string;
   disciplines: Discipline[];
@@ -104,6 +124,7 @@ export async function registerUser(data: {
   try {
     const sanitizedEmail = sanitizeInput(data.email.toLowerCase());
     const sanitizedName = sanitizeInput(data.name);
+    const sanitizedPreferredName = sanitizeInput(data.preferred_name);
     const sanitizedWorkplace = sanitizeInput(data.workplace);
 
     // Read all users
@@ -123,6 +144,7 @@ export async function registerUser(data: {
       userId,
       sanitizedEmail,
       sanitizedName,
+      sanitizedPreferredName,
       sanitizedWorkplace,
       data.disciplines.join(','),
       now,
@@ -207,12 +229,13 @@ export async function getUserByEmail(email: string): Promise<User | null> {
 export async function updateUserProfile(data: {
   userId: string;
   name: string;
+  preferred_name: string;
   workplace: string;
   disciplines: Discipline[];
-  pin: string;
 }): Promise<{ success: boolean; error?: string }> {
   try {
     const sanitizedName = sanitizeInput(data.name);
+    const sanitizedPreferredName = sanitizeInput(data.preferred_name);
     const sanitizedWorkplace = sanitizeInput(data.workplace);
 
     // Read all users
@@ -236,11 +259,12 @@ export async function updateUserProfile(data: {
       user.id,
       user.email, // Email cannot be changed
       sanitizedName,
+      sanitizedPreferredName,
       sanitizedWorkplace,
       data.disciplines.join(','),
       user.created_at,
       now,
-      data.pin,
+      user.pin, // PIN not editable from profile
     ];
 
     await updateRow(SHEETS.USERS, userRowIndex, updatedRow);

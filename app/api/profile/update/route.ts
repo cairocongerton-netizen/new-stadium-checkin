@@ -10,19 +10,12 @@ import type { Discipline } from '@/types';
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { userId, name, workplace, disciplines, pin } = body;
+    const { userId, name, preferred_name, workplace, disciplines } = body;
 
     // Validation
-    if (!userId || !name || !workplace || !disciplines || disciplines.length === 0 || !pin) {
+    if (!userId || !name || !workplace || !disciplines || disciplines.length === 0) {
       return NextResponse.json(
         { error: 'All fields are required' },
-        { status: 400 }
-      );
-    }
-
-    if (pin.length !== 4 || !/^\d{4}$/.test(pin)) {
-      return NextResponse.json(
-        { error: 'PIN must be exactly 4 digits' },
         { status: 400 }
       );
     }
@@ -31,9 +24,9 @@ export async function POST(request: NextRequest) {
     const result = await updateUserProfile({
       userId,
       name,
+      preferred_name: preferred_name || '',
       workplace,
       disciplines: disciplines as Discipline[],
-      pin,
     });
 
     if (!result.success) {

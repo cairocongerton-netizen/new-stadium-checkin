@@ -16,6 +16,7 @@ export interface User {
   id: string;
   email: string;
   name: string;
+  preferred_name: string;
   workplace: string;
   disciplines: Discipline[];
   created_at: string;

@@ -10,7 +10,7 @@ import type { Discipline } from '@/types';
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { email, name, workplace, pin, disciplines } = body;
+    const { email, name, preferred_name, workplace, pin, disciplines } = body;
 
     // Validation
     if (!email || !name || !workplace || !pin || !disciplines || disciplines.length === 0) {
@@ -31,6 +31,7 @@ export async function POST(request: NextRequest) {
     const result = await registerUser({
       email,
       name,
+      preferred_name: preferred_name || '',
       workplace,
       pin,
       disciplines: disciplines as Discipline[],

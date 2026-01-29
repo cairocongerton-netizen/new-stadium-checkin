@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
+import { format } from 'date-fns';
 
 export default function LoginForm() {
   const router = useRouter();
@@ -12,18 +13,22 @@ export default function LoginForm() {
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [now, setNow] = useState(new Date());
 
   const emailInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     emailInputRef.current?.focus();
-
-    // Show success message if just registered
     if (searchParams.get('registered') === 'true') {
       setShowSuccess(true);
       setTimeout(() => setShowSuccess(false), 5000);
     }
   }, [searchParams]);
+
+  useEffect(() => {
+    const interval = setInterval(() => setNow(new Date()), 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   const handlePinChange = (value: string) => {
     const digitsOnly = value.replace(/\D/g, '').slice(0, 4);
@@ -34,7 +39,6 @@ export default function LoginForm() {
     e.preventDefault();
     setError(null);
 
-    // Validation
     if (!email.trim() || !pin) {
       setError('Please enter both email and PIN');
       return;
@@ -57,10 +61,7 @@ export default function LoginForm() {
       const data = await response.json();
 
       if (response.ok && data.success) {
-        // Store user info in sessionStorage
         sessionStorage.setItem('user', JSON.stringify(data.user));
-
-        // Redirect to check-in page
         router.push('/checkin');
       } else {
         setError(data.error || 'Login failed');
@@ -74,34 +75,36 @@ export default function LoginForm() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4 flex items-center justify-center">
-      <div className="max-w-md w-full">
-        <div className="mb-8">
-          <Link href="/" className="text-gray-600 hover:text-black text-sm">
-            ← Back to Home
-          </Link>
+    <div className="min-h-screen bg-white px-6 pt-24">
+      <div className="max-w-sm w-full mx-auto">
+        {/* Logo */}
+        <div className="mb-6">
+          <svg width="80" height="32" viewBox="0 0 80 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="80" height="32" rx="4" fill="black"/>
+            <text x="10" y="23" fill="white" fontFamily="Apfel Grotezk, sans-serif" fontSize="18" fontWeight="bold">New.</text>
+          </svg>
+        </div>
+
+        {/* Title */}
+        <h1 className="text-4xl font-normal mb-4">Sign In</h1>
+
+        {/* Date and Time */}
+        <div className="flex justify-between items-center mb-8">
+          <span className="text-lg">{format(now, 'MMM d, yyyy')}</span>
+          <span className="text-lg">{format(now, 'h:mm a')}</span>
         </div>
 
         {showSuccess && (
-          <div className="bg-green-50 border border-green-200 px-4 py-3 mb-6 animate-fade-in">
-            <p className="text-green-600 text-sm">
-              Account created successfully! Please sign in.
-            </p>
+          <div className="bg-green-50 border border-green-200 px-4 py-3 mb-6">
+            <p className="text-green-600 text-sm">Account created successfully! Please sign in.</p>
           </div>
         )}
 
-        <h1 className="text-3xl md:text-4xl font-normal mb-2">
-          Sign In
-        </h1>
-        <p className="text-gray-600 mb-8">
-          Enter your email and PIN to check in
-        </p>
-
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Email Field */}
+        <form onSubmit={handleSubmit} className="space-y-5">
+          {/* Email */}
           <div>
             <label htmlFor="email" className="block text-sm font-medium mb-2">
-              Email Address
+              Email Address:
             </label>
             <input
               ref={emailInputRef}
@@ -110,15 +113,15 @@ export default function LoginForm() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="w-full px-4 py-3 border border-gray-300 focus:outline-none focus:border-black transition-colors"
-              placeholder="your.email@example.com"
+              placeholder="email@example.com"
               autoComplete="email"
             />
           </div>
 
-          {/* PIN Field */}
+          {/* PIN */}
           <div>
             <label htmlFor="pin" className="block text-sm font-medium mb-2">
-              4-Digit PIN
+              4-digit PIN:
             </label>
             <input
               type="password"
@@ -128,28 +131,27 @@ export default function LoginForm() {
               value={pin}
               onChange={(e) => handlePinChange(e.target.value)}
               maxLength={4}
-              className="w-full px-4 py-3 border border-gray-300 focus:outline-none focus:border-black transition-colors text-center text-2xl tracking-widest font-mono"
-              placeholder="••••"
+              className="w-full px-4 py-3 border border-gray-300 focus:outline-none focus:border-black transition-colors text-center text-2xl tracking-widest"
+              placeholder="&#9679; &#9679; &#9679; &#9679;"
               autoComplete="current-password"
             />
           </div>
 
-          {/* Error Message */}
           {error && (
             <div className="bg-red-50 border border-red-200 px-4 py-3">
               <p className="text-red-600 text-sm">{error}</p>
             </div>
           )}
 
-          {/* Submit Button */}
+          {/* Submit */}
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full bg-black text-white px-6 py-4 hover:bg-gray-800 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors flex items-center justify-center space-x-2"
+            className="w-full bg-black text-white px-6 py-4 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors flex items-center justify-center"
           >
             {isSubmitting ? (
               <>
-                <div className="spinner"></div>
+                <div className="spinner mr-2"></div>
                 <span>Signing In...</span>
               </>
             ) : (
@@ -158,10 +160,10 @@ export default function LoginForm() {
           </button>
         </form>
 
+        {/* Go Back */}
         <p className="text-center text-sm text-gray-500 mt-6">
-          Don't have an account?{' '}
-          <Link href="/register" className="text-black hover:underline">
-            Create Account
+          <Link href="/" className="hover:text-black">
+            &larr; Go Back
           </Link>
         </p>
       </div>
